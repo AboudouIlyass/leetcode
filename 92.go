@@ -7,16 +7,16 @@ type ListNode struct {
 	Next *ListNode
 }
 
-func main() {
-	li := &ListNode{Val: 1,
-		Next: &ListNode{Val: 2,
-			Next: &ListNode{Val: 3,
-				Next: &ListNode{Val: 4,
-					Next: &ListNode{Val: 5,
-						Next: &ListNode{Val: 6,
-							Next: &ListNode{Val: 7}}}}}}}
-	reverseBetween(li, 2, 5)
-}
+// func main() {
+// 	li := &ListNode{Val: 1,
+// 		Next: &ListNode{Val: 2,
+// 			Next: &ListNode{Val: 3,
+// 				Next: &ListNode{Val: 4,
+// 					Next: &ListNode{Val: 5,
+// 						Next: &ListNode{Val: 6,
+// 							Next: &ListNode{Val: 7}}}}}}}
+// 	reverseBetween(li, 2, 5)
+// }
 
 func reverseBetween(head *ListNode, left int, right int) *ListNode {
 	du := &ListNode{Next: head}
