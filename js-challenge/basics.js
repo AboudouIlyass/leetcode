@@ -103,34 +103,78 @@ var TimeLimitedCache = function () {
 // var promiseAll = function(functions) {
 //    return Promise.all(functions.map(f => f()))
 // };
-
 var promiseAll = function (functions) {
-    const func = async () => {
-        let p = [];
-        let c = functions.length
-        const r = async () => {
-            await new Promise((resolve, reject) => {
-                for (f of functions) {
-                    const e = f()
-                    e.then((re) => {
-                        p.push(re);
-                        c--
-                        if (c === 0) resolve()
-                    }).catch((re) => {
-                        reject(re)
-                    })
-                }
-            })
-            return p
+    return new Promise((resolve, reject) => {
+        let res = new Array(functions.length), count = 0;
+        for (let i = 0; i < functions.length; i++) {
+            (functions[i])()
+                .then((el => {
+                    res[i] = (el);
+                    count++;
+                    if (functions.length === count) resolve(res);
+                }))
+                .catch((err) => reject(err))
         }
-    
-        const res = await r();
-        return res;
-    }
-    return func()
+    })
 };
 
-const promise = promiseAll([() => new Promise(res => res(42))])
-promise.then(console.log); // [42]
+//
+var isEmpty = function (obj) {
+    return JSON.stringify(obj).length !== 2
+};
+
+//
+var chunk = function (arr, size) {
+    let res = []
+    while (arr.length !== 0) {
+        res.push(arr.slice(0, size))
+        arr.splice(0, size)
+    }
+    return res
+};
+
+//
+Array.prototype.last = function () {
+    return this.length ? this[this.length - 1] : -1
+};
+
+//
+Array.prototype.groupBy = function (fn) {
+    let res = {}
+    for (let i = 0; i < this.length; i++) {
+        let key = fn(this[i])
+        if (!res[key]) {
+            res[key] = [];
+        }
+        res[key].push(this[i]);
+    }
+    return res
+};
+
+//
+var join = function (arr1, arr2) {
+    let conc = arr1.concat(arr2);
+    let t = new Map();
+    for (let i of conc) {
+        let temp, pu = { ...i };
+        if (t.has(i.id)) {
+            temp = t.get(i.id);
+            for (let key in temp) {
+                if (!(key in pu)) {
+                    pu[key] = temp[key];
+                }
+            }
+        }
+        t.set(i.id, pu);
+    }
+    let sort_t = [...t].sort((x, y) => x[0] - y[0]);
+    return sort_t.map(e =>
+        Object.fromEntries(Object.keys(e[1]).sort().map(j => [j, e[1][j]]))
+    );
+};
+
+//
+
+
 
 // https://leetcode.com/studyplan/30-days-of-javascript/
